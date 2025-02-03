@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Password Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+    <style>
+      input[type="range"]::-webkit-slider-runnable-track {
+        background: #a855f7;
+        height: 6px;
+        border-radius: 3px;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        background: #ffffff;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        cursor: pointer;
+        margin-top: -5px;
+      }
+      input[type="checkbox"] {
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border: 2px solid #a855f7;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+      input[type="checkbox"]:checked::before {
+        content: "\2713";
+        color: white;
+        font-size: 14px;
+        font-weight: bold;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #a855f7;
+        width: 100%;
+        height: 100%;
+        border-radius: 3px;
+      }
+      .animated-btn {
+        transition: transform 0.2s ease-in-out;
+      }
+      .animated-btn:active {
+        transform: scale(0.95);
+      }
+    </style>
+  </head>
+  <body class="flex items-center justify-center h-screen bg-gray-900">
+    <div
+      class="bg-gray-800 p-8 rounded-xl shadow-2xl w-96 text-white border border-purple-500"
+    >
+      <h2 class="text-center text-2xl font-bold mb-4 text-purple-400">
+        Password Generator
+      </h2>
+      <input
+        id="password"
+        type="text"
+        placeholder="Click on Generate button"
+        class="w-full p-3 text-black rounded-lg text-center font-mono shadow-inner"
+        readonly
+      />
+      <div class="flex gap-3 mt-6">
+        <button
+          onclick="generatePassword()"
+          class="w-1/2 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg shadow-md transition animated-btn"
+        >
+          Generate
+        </button>
+        <button
+          onclick="copyToClipboard()"
+          class="w-1/2 bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg shadow-md transition animated-btn"
+        >
+          Copy
+        </button>
+      </div>
+      <div class="mt-6 space-y-3">
+        <label class="block font-semibold"
+          >Password Length:
+          <span id="lengthValue" class="text-purple-400">12</span></label
+        >
+        <input
+          id="length"
+          type="range"
+          min="4"
+          max="32"
+          value="12"
+          class="w-full mt-1 appearance-none h-2 rounded-lg cursor-pointer"
+          oninput="updateLength()"
+        />
+        <label class="flex items-center gap-2"
+          ><input type="checkbox" id="uppercase" checked /> Include uppercase
+          letters</label
+        >
+        <label class="flex items-center gap-2"
+          ><input type="checkbox" id="lowercase" checked /> Include lowercase
+          letters</label
+        >
+        <label class="flex items-center gap-2"
+          ><input type="checkbox" id="numbers" checked /> Include numbers</label
+        >
+        <label class="flex items-center gap-2"
+          ><input type="checkbox" id="symbols" checked /> Include symbols</label
+        >
+      </div>
+    </div>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/toastify-js"
+    ></script>
+    <script>
+      function generatePassword() {
+        const length = document.getElementById("length").value;
+        const uppercase = document.getElementById("uppercase").checked;
+        const lowercase = document.getElementById("lowercase").checked;
+        const numbers = document.getElementById("numbers").checked;
+        const symbols = document.getElementById("symbols").checked;
+
+        const upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const lowerChars = "abcdefghijklmnopqrstuvwxyz";
+        const numberChars = "0123456789";
+        const symbolChars = "!@#$%^&*()_+{}[]";
+
+        let charSet = "";
+        if (uppercase) charSet += upperChars;
+        if (lowercase) charSet += lowerChars;
+        if (numbers) charSet += numberChars;
+        if (symbols) charSet += symbolChars;
+
+        let password = "";
+        for (let i = 0; i < length; i++) {
+          password += charSet.charAt(
+            Math.floor(Math.random() * charSet.length)
+          );
+        }
+
+        document.getElementById("password").value = password;
+        triggerConfetti();
+      }
+
+      function copyToClipboard() {
+        const passwordField = document.getElementById("password");
+        passwordField.select();
+        document.execCommand("copy");
+
+        Toastify({
+          text: "Password copied to clipboard!",
+          duration: 3000,
+          destination: "https://github.com/apvarun/toastify-js",
+          newWindow: true,
+          close: true,
+          gravity: "top", // `top` or `bottom`
+          position: "right", // `left`, `center` or `right`
+          stopOnFocus: true, // Prevents dismissing of toast on hover
+          style: {
+            background: "linear-gradient(to right, #f12711, #f5af19)",
+          },
+          onClick: function () {}, // Callback after click
+        }).showToast();
+      }
+
+      function updateLength() {
+        document.getElementById("lengthValue").textContent =
+          document.getElementById("length").value;
+      }
+    </script>
+  </body>
+</html>
